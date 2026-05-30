@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{% if query %}"{{ query }}" &middot; {% endif %}Cerca &middot; OptionTrade decode{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>
+    {% if query %}Risultati per "{{ query }}"{% else %}Tutti i video{% endif %}
+    <span class="muted small">({{ risultati|length }})</span>
+  </h2>
+
+  {% set base_endpoint = 'search' %}
+  {% set base_query = {'q': query} %}
+  {% include "_filter_bar.html" %}
+
+  {% if risultati %}
+    <ul class="video-list">
+      {% for r in risultati %}
+        <li>
+          <a href="{{ url_for('video_detail', video_pk=r['id']) }}"><strong>{{ r['titolo'] or '(senza titolo)' }}</strong></a>
+          <div class="meta">
+            {% if r['strategia'] %}<em>{{ r['strategia'] }}</em>{% endif %}
+            {% if r['canale'] %}&middot; {{ r['canale'] }}{% endif %}
+            {% if r['autore'] %}&middot; <span class="autore">{{ r['autore'] }}</span>{% endif %}
+          </div>
+          {% if r['tag'] %}<div class="tags">{% for t in r['tag'].split(',') %}<span class="tag">{{ t.strip() }}</span>{% endfor %}</div>{% endif %}
+          {% if 'snippet' in r.keys() and r['snippet'] %}
+            <p class="snippet">{{ r['snippet']|safe }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">Nessun risultato.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

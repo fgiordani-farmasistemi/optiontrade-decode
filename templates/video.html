@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ v['titolo'] }} &middot; OptionTrade decode{% endblock %}
+{% block content %}
+
+<article class="card">
+  <h2>{{ v['titolo'] or '(senza titolo)' }}</h2>
+  <p class="meta">
+    {% if v['canale'] %}{{ v['canale'] }}{% endif %}
+    {% if v['autore'] %}&middot; <span class="autore">{{ v['autore'] }}</span>{% endif %}
+    {% if v['durata_sec'] %}&middot; {{ v['durata_sec']|hms }}{% endif %}
+    {% if v['lingua_orig'] %}&middot; lingua: {{ v['lingua_orig'] }}{% endif %}
+    &middot; <a href="{{ v['url'] }}" target="_blank" rel="noopener">apri su YouTube</a>
+  </p>
+
+  <details class="edit-box">
+    <summary>Strategia: <strong>{{ v['strategia'] or '—' }}</strong> &middot; Tag: {{ v['tag'] or '—' }} &middot; Autore: {{ v['autore'] or '—' }}</summary>
+    <form action="{{ url_for('video_edit', video_pk=v['id']) }}" method="post" class="edit-form">
+      <label>Strategia<input type="text" name="strategia" value="{{ v['strategia'] }}"></label>
+      <label>Autore<input type="text" name="autore" value="{{ v['autore'] }}"></label>
+      <label>Tag (separati da virgola)<input type="text" name="tag" value="{{ v['tag'] }}"></label>
+      <label>Topics (separati da " | ")<input type="text" name="topics" value="{{ v['topics'] }}"></label>
+      <button type="submit">Salva</button>
+    </form>
+  </details>
+
+  {% if v['topics'] %}
+    <div class="topics-box">
+      <h3>Topics trattati nel video</h3>
+      <ol class="topics-list">
+        {% for t in v['topics'].split(' | ') %}
+          <li>{{ t }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+  {% endif %}
+
+  <div class="sintesi">
+    {{ v['sintesi_it']|md|safe }}
+  </div>
+
+  <details class="transcript">
+    <summary>Trascrizione originale ({{ v['trascrizione']|length }} caratteri)</summary>
+    <p>{{ v['trascrizione'] }}</p>
+  </details>
+</article>
+
+{% endblock %}

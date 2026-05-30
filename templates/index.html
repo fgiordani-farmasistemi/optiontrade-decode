@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Home &middot; OptionTrade decode{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>Aggiungi un video</h2>
+  <p class="muted">Incolla un link YouTube di un video sulle opzioni. L'app scarica
+    i sottotitoli, identifica la strategia e produce una sintesi in italiano.</p>
+  <form action="{{ url_for('ingest_route') }}" method="post" class="ingest-form">
+    <input type="url" name="url" placeholder="https://www.youtube.com/watch?v=..." required
+           {% if not api_key_present %}disabled{% endif %}>
+    <button type="submit" {% if not api_key_present %}disabled{% endif %}>Elabora</button>
+  </form>
+  {% if not api_key_present %}
+    <p class="muted small">Configura la chiave API ({{ provider_label }}) nel file .env per abilitare questa funzione.</p>
+  {% else %}
+    <p class="muted small">Provider attivo: <strong>{{ provider_label }}</strong>. L'elaborazione richiede da 10 a 40 secondi.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>
+    {% if filtro_strategia or filtro_canale or filtro_autore %}
+      Video filtrati
+    {% else %}
+      Ultimi video archiviati
+    {% endif %}
+    <span class="muted small">({{ recenti|length }})</span>
+  </h2>
+
+  {% set base_endpoint = 'index' %}
+  {% set base_query = {} %}
+  {% include "_filter_bar.html" %}
+
+  {% if recenti %}
+    <ul class="video-list">
+      {% for r in recenti %}
+        <li>
+          <a href="{{ url_for('video_detail', video_pk=r['id']) }}"><strong>{{ r['titolo'] or '(senza titolo)' }}</strong></a>
+          <div class="meta">
+            {% if r['strategia'] %}<em>{{ r['strategia'] }}</em>{% endif %}
+            {% if r['canale'] %}&middot; {{ r['canale'] }}{% endif %}
+            {% if r['autore'] %}&middot; <span class="autore">{{ r['autore'] }}</span>{% endif %}
+          </div>
+          {% if r['tag'] %}<div class="tags">{% for t in r['tag'].split(',') %}<span class="tag">{{ t.strip() }}</span>{% endfor %}</div>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">
+      {% if filtro_strategia or filtro_canale or filtro_autore %}
+        Nessun video corrisponde ai filtri selezionati.
+      {% else %}
+        Ancora nessun video. Incolla un URL qui sopra per iniziare.
+      {% endif %}
+    </p>
+  {% endif %}
+</section>
+
+{% endblock %}

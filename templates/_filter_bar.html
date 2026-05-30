@@ -1,0 +1,63 @@
+{# Barra chip filtro riusabile.
+   Parametri:
+     facets             dict con 'strategia' e 'canale' = lista (valore, count)
+     filtro_strategia   stringa attiva o None
+     filtro_canale      stringa attiva o None
+     base_endpoint      'index' o 'search' (per costruire i link)
+     base_query         dict di parametri da preservare (es. {'q': 'butterfly'})
+#}
+{% macro chip_url(base_endpoint, base_query, key, value) %}
+  {% set params = {} %}
+  {% for k, v in base_query.items() if v %}{% set _ = params.update({k: v}) %}{% endfor %}
+  {% if value %}{% set _ = params.update({key: value}) %}{% else %}{% set _ = params.pop(key, None) %}{% endif %}
+  {{ url_for(base_endpoint, **params) }}
+{% endmacro %}
+
+{% if facets.strategia or facets.canale %}
+<div class="filter-bar">
+  {% if facets.strategia %}
+    <div class="group">
+      <span class="label">Strategia</span>
+      {% if filtro_strategia %}
+        <a class="chip clear" href="{{ chip_url(base_endpoint, base_query, 'strategia', None)|trim }}">&times; rimuovi</a>
+      {% endif %}
+      {% for nome, n in facets.strategia[:12] %}
+        <a class="chip {% if filtro_strategia == nome %}active{% endif %}"
+           href="{{ chip_url(base_endpoint, base_query, 'strategia', None if filtro_strategia == nome else nome)|trim }}">
+          {{ nome }} <span class="count">{{ n }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if facets.canale %}
+    <div class="group">
+      <span class="label">Canale</span>
+      {% if filtro_canale %}
+        <a class="chip clear" href="{{ chip_url(base_endpoint, base_query, 'canale', None)|trim }}">&times; rimuovi</a>
+      {% endif %}
+      {% for nome, n in facets.canale[:12] %}
+        <a class="chip {% if filtro_canale == nome %}active{% endif %}"
+           href="{{ chip_url(base_endpoint, base_query, 'canale', None if filtro_canale == nome else nome)|trim }}">
+          {{ nome }} <span class="count">{{ n }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if facets.autore %}
+    <div class="group">
+      <span class="label">Autore</span>
+      {% if filtro_autore %}
+        <a class="chip clear" href="{{ chip_url(base_endpoint, base_query, 'autore', None)|trim }}">&times; rimuovi</a>
+      {% endif %}
+      {% for nome, n in facets.autore[:12] %}
+        <a class="chip {% if filtro_autore == nome %}active{% endif %}"
+           href="{{ chip_url(base_endpoint, base_query, 'autore', None if filtro_autore == nome else nome)|trim }}">
+          {{ nome }} <span class="count">{{ n }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endif %}

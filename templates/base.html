@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}OptionTrade decode{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <a href="{{ url_for('index') }}" class="brand">OptionTrade <span>decode</span></a>
+    <form action="{{ url_for('search') }}" method="get" class="search-form">
+      <input type="search" name="q" placeholder="Cerca strategia, tag, parole chiave..." value="{{ request.args.get('q','') }}">
+      <button type="submit">Cerca</button>
+    </form>
+  </header>
+
+  {% if not api_key_present %}
+    <div class="banner warn">
+      Chiave API non configurata per il provider attivo (<code>{{ provider_label }}</code>):
+      l'aggiunta di nuovi video e' disabilitata. Puoi comunque consultare e cercare
+      nei video gia' presenti. Per abilitare l'ingest, configura la chiave nel file <code>.env</code>.
+    </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="banner {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    OptionTrade decode &middot; archivio personale strategie opzioni
+  </footer>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Sottotitoli mancanti &middot; OptionTrade decode{% endblock %}
+{% block content %}
+
+{% set durata_min = (info.durata_sec or 0) / 60 %}
+{% set costo_cent = (durata_min * 0.6) | round(1) %}
+
+<section class="card whisper-card">
+  <h2>Sottotitoli non presenti</h2>
+  <p class="muted">
+    Questo video non ha sottotitoli automatici disponibili su YouTube.
+    Per estrarne il contenuto serve scaricare l'audio e farlo trascrivere
+    via OpenAI Whisper, che ha un costo aggiuntivo rispetto ai video
+    normali.
+  </p>
+
+  <dl class="kv">
+    <dt>Titolo</dt><dd>{{ info.titolo or '(senza titolo)' }}</dd>
+    {% if info.canale %}<dt>Canale</dt><dd>{{ info.canale }}</dd>{% endif %}
+    {% if info.durata_sec %}<dt>Durata</dt><dd>{{ info.durata_sec|hms }} ({{ durata_min | round(1) }} minuti)</dd>{% endif %}
+    <dt>Modello</dt><dd><code>{{ info.whisper_model }}</code></dd>
+    <dt>Costo stimato Whisper</dt>
+    <dd>~ {{ costo_cent }} centesimi USD per l'audio (+ ~3–6 cent per la pipeline LLM 2-step)</dd>
+  </dl>
+
+  {% if info.durata_sec and info.durata_sec > 1500 %}
+    <div class="banner warn" style="margin: 12px 0;">
+      Il video supera ~25 minuti: l'audio potrebbe eccedere il limite di 25 MB
+      di Whisper API. Se l'ingest fallisce con "audio troppo grande", per ora
+      non e' possibile processarlo senza split (richiede ffmpeg).
+    </div>
+  {% endif %}
+
+  {% if not info.whisper_available %}
+    <div class="banner error">
+      Il fallback Whisper non e' disponibile (manca ENABLE_WHISPER_FALLBACK=1
+      o la chiave OPENAI_API_KEY nel file .env). Non posso elaborare questo video.
+    </div>
+    <p><a href="{{ url_for('index') }}" class="btn-secondary">Torna alla home</a></p>
+  {% else %}
+    <div class="whisper-actions">
+      <form action="{{ url_for('ingest_route') }}" method="post" style="display:inline">
+        <input type="hidden" name="url" value="{{ info.url }}">
+        <input type="hidden" name="force_whisper" value="1">
+        <button type="submit">Procedi con Whisper</button>
+      </form>
+      <a href="{{ url_for('index') }}" class="btn-secondary">Annulla</a>
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}
