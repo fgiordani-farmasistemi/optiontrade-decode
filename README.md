@@ -32,13 +32,12 @@ esce dal computer, tranne le chiamate al provider AI quando elabori un video.
    - in alternativa, se hai git: `git clone https://github.com/fgiordani-farmasistemi/optiontrade-decode.git`
 3. **Fai doppio clic su `install.bat`**. Crea un ambiente Python isolato in
    `.venv\`, installa le librerie e aggiunge il collegamento nel menu Start.
-4. **Avvia l'app** dal menu Start → *"OptionTrade decode"*, oppure con doppio
-   clic su **`OptionTrade.exe`**: si apre in una finestra applicativa propria.
+4. **Avvia l'app** dal menu Start → *"OptionTrade decode"*: si apre in una
+   **finestra applicativa propria** (non nel browser).
 
 Il database parte **vuoto**: si crea da solo al primo avvio.
 
-> `run.bat` resta disponibile come avvio alternativo (apre l'app nel browser),
-> ma il modo consigliato è l'eseguibile `OptionTrade.exe`.
+> `run.bat` resta disponibile come avvio alternativo nel browser.
 
 ## Primo avvio: inserisci la chiave API
 
@@ -111,8 +110,7 @@ elabora i prossimi.
 
 ```
 OptionTrade_decode\
-  OptionTrade.exe    Eseguibile: apre l'app in finestra nativa
-  desktop.py         Sorgente del launcher (pywebview)
+  desktop.py         Launcher: apre l'app in finestra nativa (pywebview)
   icon.ico           Icona dell'app
   app.py             Webapp Flask (route, template)
   ingest.py          Pipeline yt-dlp -> LLM -> SQLite

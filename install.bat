@@ -45,14 +45,14 @@ if not exist ".env" (
 )
 
 echo [5/5] Creo il collegamento nel menu Start ...
-powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $lnk = $ws.CreateShortcut([Environment]::GetFolderPath('Programs') + '\OptionTrade decode.lnk'); $lnk.TargetPath = '%~dp0OptionTrade.exe'; $lnk.WorkingDirectory = '%~dp0'; $lnk.IconLocation = '%~dp0icon.ico'; $lnk.Description = 'OptionTrade decode'; $lnk.Save()" >nul 2>&1
+powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $lnk = $ws.CreateShortcut([Environment]::GetFolderPath('Programs') + '\OptionTrade decode.lnk'); $lnk.TargetPath = '%~dp0.venv\Scripts\pythonw.exe'; $lnk.Arguments = '\"%~dp0desktop.py\"'; $lnk.WorkingDirectory = '%~dp0'; $lnk.IconLocation = '%~dp0icon.ico'; $lnk.Description = 'OptionTrade decode'; $lnk.Save()" >nul 2>&1
 
 echo.
 echo ============================================================
 echo  Installazione completata.
 echo.
 echo  Avvia l'app dal menu Start  ->  "OptionTrade decode"
-echo  oppure con doppio clic su   ->  OptionTrade.exe
+echo  (si apre in una finestra applicativa propria)
 echo.
 echo  Al primo avvio, apri Impostazioni e inserisci la chiave API.
 echo ============================================================

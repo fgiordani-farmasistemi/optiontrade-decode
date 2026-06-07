@@ -18,8 +18,9 @@ data/secrets.json
 # Backup automatici del database creati prima degli aggiornamenti
 data/backups/
 
-# Artefatti di build PyInstaller (intermedi). L'exe OptionTrade.exe e'
-# invece versionato di proposito, cosi' arriva pronto nel download.
+# Artefatti di build PyInstaller: l'app si avvia via collegamento a Python
+# (niente exe da distribuire, evita falsi positivi antivirus).
 build/
 dist/
 *.spec
+OptionTrade.exe
