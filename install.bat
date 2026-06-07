@@ -18,7 +18,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [1/4] Creo l'ambiente virtuale .venv ...
+echo [1/5] Creo l'ambiente virtuale .venv ...
 if not exist ".venv" (
   python -m venv .venv
   if errorlevel 1 (
@@ -28,10 +28,10 @@ if not exist ".venv" (
   )
 )
 
-echo [2/4] Aggiorno pip ...
+echo [2/5] Aggiorno pip ...
 call ".venv\Scripts\python.exe" -m pip install --upgrade pip --quiet
 
-echo [3/4] Installo le dipendenze (puo' richiedere qualche minuto) ...
+echo [3/5] Installo le dipendenze (puo' richiedere qualche minuto) ...
 call ".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 (
   echo [ERRORE] Installazione dipendenze fallita.
@@ -39,19 +39,22 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [4/4] Preparo il file di configurazione .env ...
+echo [4/5] Preparo il file di configurazione .env ...
 if not exist ".env" (
   copy /Y ".env.example" ".env" >nul
-  echo File .env creato. Aprilo e inserisci la tua chiave Anthropic
-  echo se vuoi abilitare l'aggiunta di nuovi video.
-) else (
-  echo File .env gia' presente, lasciato invariato.
 )
+
+echo [5/5] Creo il collegamento nel menu Start ...
+powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $lnk = $ws.CreateShortcut([Environment]::GetFolderPath('Programs') + '\OptionTrade decode.lnk'); $lnk.TargetPath = '%~dp0OptionTrade.exe'; $lnk.WorkingDirectory = '%~dp0'; $lnk.IconLocation = '%~dp0icon.ico'; $lnk.Description = 'OptionTrade decode'; $lnk.Save()" >nul 2>&1
 
 echo.
 echo ============================================================
 echo  Installazione completata.
-echo  Avvia l'app con:   run.bat
+echo.
+echo  Avvia l'app dal menu Start  ->  "OptionTrade decode"
+echo  oppure con doppio clic su   ->  OptionTrade.exe
+echo.
+echo  Al primo avvio, apri Impostazioni e inserisci la chiave API.
 echo ============================================================
 echo.
 pause

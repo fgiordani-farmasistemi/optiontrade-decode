@@ -18,8 +18,8 @@ data/secrets.json
 # Backup automatici del database creati prima degli aggiornamenti
 data/backups/
 
-# Artefatti di build PyInstaller (l'exe si distribuisce a parte, non nel repo)
+# Artefatti di build PyInstaller (intermedi). L'exe OptionTrade.exe e'
+# invece versionato di proposito, cosi' arriva pronto nel download.
 build/
 dist/
 *.spec
-OptionTrade.exe

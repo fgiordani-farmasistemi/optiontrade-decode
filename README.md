@@ -31,10 +31,14 @@ esce dal computer, tranne le chiamate al provider AI quando elabori un video.
      comoda (es. `C:\OptionTrade_decode`);
    - in alternativa, se hai git: `git clone https://github.com/fgiordani-farmasistemi/optiontrade-decode.git`
 3. **Fai doppio clic su `install.bat`**. Crea un ambiente Python isolato in
-   `.venv\` e installa le librerie necessarie.
-4. **Avvia con `run.bat`**: si apre il browser su `http://127.0.0.1:5000`.
+   `.venv\`, installa le librerie e aggiunge il collegamento nel menu Start.
+4. **Avvia l'app** dal menu Start → *"OptionTrade decode"*, oppure con doppio
+   clic su **`OptionTrade.exe`**: si apre in una finestra applicativa propria.
 
 Il database parte **vuoto**: si crea da solo al primo avvio.
+
+> `run.bat` resta disponibile come avvio alternativo (apre l'app nel browser),
+> ma il modo consigliato è l'eseguibile `OptionTrade.exe`.
 
 ## Primo avvio: inserisci la chiave API
 
@@ -107,6 +111,9 @@ elabora i prossimi.
 
 ```
 OptionTrade_decode\
+  OptionTrade.exe    Eseguibile: apre l'app in finestra nativa
+  desktop.py         Sorgente del launcher (pywebview)
+  icon.ico           Icona dell'app
   app.py             Webapp Flask (route, template)
   ingest.py          Pipeline yt-dlp -> LLM -> SQLite
   clean_vtt.py       Pulizia trascrizione VTT
@@ -115,8 +122,8 @@ OptionTrade_decode\
   updater.py         Auto-aggiornamento dal repo GitHub
   VERSION            Versione corrente
   requirements.txt   Dipendenze Python
-  install.bat        Installazione one-click
-  run.bat            Avvio app + apertura browser
+  install.bat        Installazione + collegamento menu Start
+  run.bat            Avvio alternativo nel browser
   data\
     videos.sqlite    Database (creato al primo avvio, non versionato)
     secrets.json     Vault chiavi cifrate (non versionato)

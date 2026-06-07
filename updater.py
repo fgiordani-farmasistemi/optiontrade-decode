@@ -28,7 +28,10 @@ import config
 BASE_DIR = config.BASE_DIR
 
 # Nomi di primo livello che l'update non deve MAI sovrascrivere.
-PROTECTED = {".env", ".venv", ".git", "__pycache__", "data"}
+# OptionTrade.exe e' il launcher in esecuzione: su Windows non si puo'
+# sovrascrivere un eseguibile in uso, e comunque l'auto-update aggiorna i
+# sorgenti, non il guscio launcher.
+PROTECTED = {".env", ".venv", ".git", "__pycache__", "data", "OptionTrade.exe"}
 
 
 def _parse_version(v: str) -> tuple[int, ...]:
