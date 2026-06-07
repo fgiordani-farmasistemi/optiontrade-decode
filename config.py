@@ -26,6 +26,25 @@ SECRETS_PATH = BASE_DIR / "data" / "secrets.json"
 # un vault cifrato con DPAPI di Windows (legato all'utente di questo PC).
 SECRET_KEYS = ("OPENAI_API_KEY", "ANTHROPIC_API_KEY")
 
+# Repository pubblico da cui l'app si aggiorna.
+REPO_OWNER = "fgiordani-farmasistemi"
+REPO_NAME = "optiontrade-decode"
+REPO_BRANCH = "main"
+
+
+def raw_url(path: str) -> str:
+    """URL del file grezzo sul repo (es. la VERSION remota)."""
+    return f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{REPO_BRANCH}/{path}"
+
+
+def zip_url() -> str:
+    """URL dell'archivio ZIP del branch corrente."""
+    return f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/{REPO_BRANCH}.zip"
+
+
+def repo_html_url() -> str:
+    return f"https://github.com/{REPO_OWNER}/{REPO_NAME}"
+
 # Ruolo di default del modello (la prima frase del system prompt).
 # Modificabile dall'utente nel menu Impostazioni.
 DEFAULT_ROLE = "Sei un assistente esperto di trading in opzioni finanziarie."

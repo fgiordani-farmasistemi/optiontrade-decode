@@ -14,3 +14,6 @@ data/*.sqlite-shm
 
 # Vault chiavi API cifrate (DPAPI): mai versionato
 data/secrets.json
+
+# Backup automatici del database creati prima degli aggiornamenti
+data/backups/

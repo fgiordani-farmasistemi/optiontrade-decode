@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -11,6 +12,7 @@ import markdown as md
 load_dotenv(Path(__file__).parent / ".env")
 
 import config  # noqa: E402
+import updater  # noqa: E402
 import db  # noqa: E402  (load env first)
 from ingest import (  # noqa: E402
     IngestError,
@@ -162,7 +164,34 @@ def settings():
         flash("Impostazioni salvate.", "ok")
         return redirect(url_for("settings"))
 
-    return render_template("settings.html", s=config.get_settings())
+    return render_template("settings.html", s=config.get_settings(), update=None)
+
+
+@app.route("/update/check", methods=["POST"])
+def update_check():
+    info = updater.check_for_update()
+    if not info.get("ok"):
+        flash(f"Impossibile controllare gli aggiornamenti: {info.get('error')}", "error")
+        info = None
+    return render_template("settings.html", s=config.get_settings(), update=info)
+
+
+@app.route("/update/apply", methods=["POST"])
+def update_apply():
+    try:
+        backup = updater.backup_database()
+        updater.apply_update()
+    except Exception as exc:  # noqa: BLE001
+        flash(f"Aggiornamento fallito: {exc}. Nessun dato perso.", "error")
+        return redirect(url_for("settings"))
+
+    new_version = config.app_version()
+    # Avvia il relauncher e programma l'uscita di questo processo cosi' la
+    # porta si libera e il nuovo server parte con il codice aggiornato.
+    updater.restart()
+    threading.Timer(1.5, lambda: os._exit(0)).start()
+    return render_template("updating.html", version=new_version,
+                           backup=(backup.name if backup else None))
 
 
 if __name__ == "__main__":

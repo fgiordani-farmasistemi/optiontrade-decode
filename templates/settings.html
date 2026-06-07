@@ -64,9 +64,29 @@
   <dl class="kv">
     <dt>Versione installata</dt>
     <dd><strong>v{{ s.version }}</strong></dd>
-    <dt>Aggiornamenti</dt>
-    <dd class="muted">Il controllo automatico degli aggiornamenti sara' disponibile a breve, dopo la pubblicazione su GitHub. Includera' il backup automatico del database prima di ogni aggiornamento.</dd>
   </dl>
+
+  {% if update and update.ok %}
+    {% if update.available %}
+      <div class="banner ok" style="margin:12px 0;">
+        È disponibile la versione <strong>v{{ update.latest }}</strong> (hai la v{{ update.current }}).
+      </div>
+      <p class="muted small">Premendo "Aggiorna ora" l'app fa un <strong>backup automatico del database</strong>,
+        scarica la nuova versione, sostituisce solo il codice (i tuoi video e la chiave restano intatti)
+        e si riavvia da sola.</p>
+      <form action="{{ url_for('update_apply') }}" method="post" style="margin-top:10px;">
+        <button type="submit">Aggiorna ora a v{{ update.latest }}</button>
+      </form>
+    {% else %}
+      <div class="banner ok" style="margin:12px 0;">Sei già aggiornato all'ultima versione (v{{ update.current }}).</div>
+    {% endif %}
+  {% else %}
+    <p class="muted small">Controlla se c'è una versione più recente sul repository ufficiale.
+      Prima di ogni aggiornamento viene fatto un backup automatico del database.</p>
+    <form action="{{ url_for('update_check') }}" method="post" style="margin-top:6px;">
+      <button type="submit">Controlla aggiornamenti</button>
+    </form>
+  {% endif %}
 </section>
 
 {% endblock %}

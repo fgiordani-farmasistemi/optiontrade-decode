@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Aggiornamento &middot; OptionTrade decode{% endblock %}
+{% block content %}
+<meta http-equiv="refresh" content="8; url={{ url_for('index') }}">
+
+<section class="card" style="text-align:center;">
+  <h2>Aggiornamento alla v{{ version }} completato</h2>
+  <p class="muted">Il server si sta riavviando con la nuova versione.</p>
+  {% if backup %}
+    <p class="muted small">Backup del database creato: <code>data/backups/{{ backup }}</code></p>
+  {% endif %}
+  <p class="muted">Questa pagina si ricarica da sola tra pochi secondi.
+     Se restasse ferma, ricarica manualmente <a href="{{ url_for('index') }}">la home</a>.</p>
+</section>
+
+{% endblock %}
