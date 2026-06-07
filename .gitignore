@@ -11,3 +11,6 @@ data/*.sqlite
 data/*.sqlite-journal
 data/*.sqlite-wal
 data/*.sqlite-shm
+
+# Vault chiavi API cifrate (DPAPI): mai versionato
+data/secrets.json

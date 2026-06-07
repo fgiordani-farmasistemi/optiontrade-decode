@@ -26,7 +26,7 @@
 
   <section class="card">
     <h2>Chiavi API</h2>
-    <p class="muted small">Restano salvate solo sul tuo PC (file <code>.env</code>), non vengono mai inviate altrove se non al provider scelto. Lascia il campo vuoto per non modificare la chiave gia' salvata.</p>
+    <p class="muted small">Salvate <strong>cifrate</strong> solo sul tuo PC (vault DPAPI di Windows, legato al tuo utente): nel file non resta nulla in chiaro, e non vengono mai inviate altrove se non al provider scelto. Lascia il campo vuoto per non modificare la chiave gia' salvata.</p>
     <label class="field">
       <span>OpenAI API key
         {% if s.openai_key.set %}<em class="key-ok">impostata {{ s.openai_key.hint }}</em>{% else %}<em class="key-no">non impostata</em>{% endif %}

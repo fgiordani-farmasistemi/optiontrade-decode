@@ -23,6 +23,8 @@ from ingest import (  # noqa: E402
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET", "optiontrade-decode-local")
 
+# Migra eventuali chiavi in chiaro nel vault cifrato e carica i segreti.
+config.bootstrap_secrets()
 db.init_db()
 
 
@@ -146,16 +148,17 @@ def settings():
         # Ruolo: stringa vuota = torna al default (gestito da _role()).
         updates["MODEL_ROLE"] = (request.form.get("model_role") or "").strip()
 
-        # Chiavi: salvate solo se l'utente ne inserisce una nuova; un campo
-        # vuoto NON cancella la chiave gia' presente.
+        config.write_env_values(updates)
+
+        # Chiavi: salvate CIFRATE nel vault (DPAPI), mai nel .env in chiaro.
+        # Un campo vuoto NON cancella la chiave gia' presente.
         openai_key = (request.form.get("openai_key") or "").strip()
         if openai_key:
-            updates["OPENAI_API_KEY"] = openai_key
+            config.save_secret("OPENAI_API_KEY", openai_key)
         anthropic_key = (request.form.get("anthropic_key") or "").strip()
         if anthropic_key:
-            updates["ANTHROPIC_API_KEY"] = anthropic_key
+            config.save_secret("ANTHROPIC_API_KEY", anthropic_key)
 
-        config.write_env_values(updates)
         flash("Impostazioni salvate.", "ok")
         return redirect(url_for("settings"))
 
