@@ -5,3 +5,9 @@ __pycache__/
 data/*.vtt
 data/*.m4a
 data/*.webm
+
+# Database locale: ogni PC parte vergine
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/*.sqlite-shm
