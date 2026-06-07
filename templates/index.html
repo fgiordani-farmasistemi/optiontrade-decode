@@ -12,7 +12,7 @@
     <button type="submit" {% if not api_key_present %}disabled{% endif %}>Elabora</button>
   </form>
   {% if not api_key_present %}
-    <p class="muted small">Configura la chiave API ({{ provider_label }}) nel file .env per abilitare questa funzione.</p>
+    <p class="muted small">Vai in <a href="{{ url_for('settings') }}">Impostazioni</a> e inserisci la chiave API ({{ provider_label }}) per abilitare questa funzione.</p>
   {% else %}
     <p class="muted small">Provider attivo: <strong>{{ provider_label }}</strong>. L'elaborazione richiede da 10 a 40 secondi.</p>
   {% endif %}

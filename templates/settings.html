@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Impostazioni &middot; OptionTrade decode{% endblock %}
+{% block content %}
+
+<form action="{{ url_for('settings') }}" method="post" class="settings-form">
+
+  <section class="card">
+    <h2>Provider e modello</h2>
+    <p class="muted small">Chi elabora le trascrizioni. OpenAI e' il default; Anthropic e' un'alternativa.</p>
+    <label class="field">
+      <span>Provider attivo</span>
+      <select name="provider">
+        <option value="openai" {% if s.provider == 'openai' %}selected{% endif %}>OpenAI</option>
+        <option value="anthropic" {% if s.provider == 'anthropic' %}selected{% endif %}>Anthropic (Claude)</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Modello OpenAI</span>
+      <input type="text" name="openai_model" value="{{ s.openai_model }}" placeholder="gpt-5.4-mini">
+    </label>
+    <label class="field">
+      <span>Modello Anthropic</span>
+      <input type="text" name="claude_model" value="{{ s.claude_model }}" placeholder="claude-sonnet-4-6">
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>Chiavi API</h2>
+    <p class="muted small">Restano salvate solo sul tuo PC (file <code>.env</code>), non vengono mai inviate altrove se non al provider scelto. Lascia il campo vuoto per non modificare la chiave gia' salvata.</p>
+    <label class="field">
+      <span>OpenAI API key
+        {% if s.openai_key.set %}<em class="key-ok">impostata {{ s.openai_key.hint }}</em>{% else %}<em class="key-no">non impostata</em>{% endif %}
+      </span>
+      <input type="password" name="openai_key" autocomplete="off"
+             placeholder="{% if s.openai_key.set %}•••••• (lascia vuoto per non cambiare){% else %}sk-...{% endif %}">
+    </label>
+    <label class="field">
+      <span>Anthropic API key
+        {% if s.anthropic_key.set %}<em class="key-ok">impostata {{ s.anthropic_key.hint }}</em>{% else %}<em class="key-no">non impostata</em>{% endif %}
+      </span>
+      <input type="password" name="anthropic_key" autocomplete="off"
+             placeholder="{% if s.anthropic_key.set %}•••••• (lascia vuoto per non cambiare){% else %}sk-ant-...{% endif %}">
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>Ruolo del modello</h2>
+    <p class="muted small">La prima frase che diamo al modello a ogni elaborazione: ne definisce il "personaggio" e la competenza. Cambiala per ottenere sintesi piu' didattiche, piu' operative, ecc. Lascia vuoto per tornare al default.</p>
+    <label class="field">
+      <span>Istruzione di ruolo</span>
+      <textarea name="model_role" rows="2" placeholder="{{ s.default_role }}">{% if s.role != s.default_role %}{{ s.role }}{% endif %}</textarea>
+    </label>
+    <p class="muted small">Default: <em>{{ s.default_role }}</em></p>
+  </section>
+
+  <div class="settings-actions">
+    <button type="submit">Salva impostazioni</button>
+    <a href="{{ url_for('index') }}" class="btn-secondary">Annulla</a>
+  </div>
+</form>
+
+<section class="card">
+  <h2>Versione e aggiornamenti</h2>
+  <dl class="kv">
+    <dt>Versione installata</dt>
+    <dd><strong>v{{ s.version }}</strong></dd>
+    <dt>Aggiornamenti</dt>
+    <dd class="muted">Il controllo automatico degli aggiornamenti sara' disponibile a breve, dopo la pubblicazione su GitHub. Includera' il backup automatico del database prima di ogni aggiornamento.</dd>
+  </dl>
+</section>
+
+{% endblock %}

@@ -23,6 +23,7 @@ from typing import Any
 import yt_dlp
 
 from clean_vtt import clean_vtt_file
+from config import DEFAULT_ROLE
 import db
 
 # Sub language priority: original, English, Italian. Auto-captions only.
@@ -31,6 +32,12 @@ SUB_LANG_PRIORITY = ["en-orig", "en", "it-orig", "it"]
 
 def _provider() -> str:
     return (os.getenv("LLM_PROVIDER", "openai") or "openai").strip().lower()
+
+
+def _role() -> str:
+    """Prima frase del system prompt: il 'ruolo' che diamo al modello.
+    Personalizzabile dal menu Impostazioni (variabile MODEL_ROLE)."""
+    return (os.getenv("MODEL_ROLE", "") or "").strip() or DEFAULT_ROLE
 
 
 def has_api_key() -> bool:
@@ -246,8 +253,7 @@ def _pick_available_lang(auto_subs: dict[str, Any]) -> str | None:
 # Step 1: outline                                                       #
 # --------------------------------------------------------------------- #
 
-OUTLINE_PROMPT = """Sei un assistente esperto di trading in opzioni finanziarie.
-Ricevi la trascrizione (in inglese o altra lingua) di un video YouTube su
+OUTLINE_PROMPT = """Ricevi la trascrizione (in inglese o altra lingua) di un video YouTube su
 opzioni. Tuo compito: leggere attentamente e produrre un OUTLINE strutturato
 del contenuto. NON tradurre ancora: stai solo mappando.
 
@@ -295,8 +301,7 @@ Rispondi SOLO con un oggetto JSON valido con questa struttura esatta:
 # Step 2: sintesi italiana che copre l'outline                          #
 # --------------------------------------------------------------------- #
 
-SYNTHESIS_PROMPT = """Sei un assistente esperto di trading in opzioni.
-Ricevi la trascrizione di un video YouTube + un OUTLINE gia' estratto che
+SYNTHESIS_PROMPT = """Ricevi la trascrizione di un video YouTube + un OUTLINE gia' estratto che
 elenca strategia, topics e tag.
 
 Tuo compito: produrre una SINTESI IN ITALIANO del contenuto del video, in
@@ -334,8 +339,9 @@ def summarize(trascrizione: str, titolo: str) -> dict[str, Any]:
             "Configura il file .env."
         )
 
+    role = _role()
     outline = _call_llm(
-        system=OUTLINE_PROMPT,
+        system=f"{role}\n\n{OUTLINE_PROMPT}",
         user=f"TITOLO VIDEO: {titolo}\n\nTRASCRIZIONE:\n{trascrizione}\n\n"
              "Produci ora l'outline JSON.",
     )
@@ -353,7 +359,7 @@ def summarize(trascrizione: str, titolo: str) -> dict[str, Any]:
         indent=2,
     )
     sintesi_raw = _call_llm(
-        system=SYNTHESIS_PROMPT,
+        system=f"{role}\n\n{SYNTHESIS_PROMPT}",
         user=(
             f"TITOLO VIDEO: {titolo}\n\n"
             f"OUTLINE DA COPRIRE:\n{outline_compact}\n\n"

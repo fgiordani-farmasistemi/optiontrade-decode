@@ -12,13 +12,15 @@
       <input type="search" name="q" placeholder="Cerca strategia, tag, parole chiave..." value="{{ request.args.get('q','') }}">
       <button type="submit">Cerca</button>
     </form>
+    <a href="{{ url_for('settings') }}" class="settings-link" title="Impostazioni">&#9881; Impostazioni</a>
   </header>
 
   {% if not api_key_present %}
     <div class="banner warn">
       Chiave API non configurata per il provider attivo (<code>{{ provider_label }}</code>):
       l'aggiunta di nuovi video e' disabilitata. Puoi comunque consultare e cercare
-      nei video gia' presenti. Per abilitare l'ingest, configura la chiave nel file <code>.env</code>.
+      nei video gia' presenti. Per abilitare l'ingest, vai in
+      <a href="{{ url_for('settings') }}">Impostazioni</a> e inserisci la chiave.
     </div>
   {% endif %}
 
@@ -33,7 +35,7 @@
   </main>
 
   <footer>
-    OptionTrade decode &middot; archivio personale strategie opzioni
+    OptionTrade decode &middot; archivio personale strategie opzioni &middot; v{{ app_version }}
   </footer>
 </body>
 </html>

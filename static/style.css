@@ -321,6 +321,55 @@ mark { background: var(--highlight); color: var(--text); padding: 0 3px; border-
   border: 1px solid var(--border);
 }
 
+.settings-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+.settings-link:hover { color: var(--accent); border-color: var(--border-strong); }
+
+.settings-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 14px 0;
+  font-size: 14px;
+}
+.settings-form .field > span { color: var(--muted); font-weight: 600; }
+.settings-form input,
+.settings-form select,
+.settings-form textarea {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.settings-form input:focus,
+.settings-form select:focus,
+.settings-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.settings-form textarea { resize: vertical; }
+.key-ok { color: var(--ok-fg); font-style: normal; font-weight: 600; font-size: 12px; }
+.key-no { color: var(--muted); font-style: normal; font-size: 12px; }
+.settings-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 4px 0 24px;
+}
+
 footer {
   text-align: center;
   color: var(--muted);

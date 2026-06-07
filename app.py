@@ -10,6 +10,7 @@ import markdown as md
 
 load_dotenv(Path(__file__).parent / ".env")
 
+import config  # noqa: E402
 import db  # noqa: E402  (load env first)
 from ingest import (  # noqa: E402
     IngestError,
@@ -30,6 +31,7 @@ def inject_globals():
     return {
         "api_key_present": has_api_key(),
         "provider_label": provider_label(),
+        "app_version": config.app_version(),
     }
 
 
@@ -124,6 +126,40 @@ def video_edit(video_pk: int):
     db.update_meta(video_pk, strategia=strategia, tag=tag, autore=autore, topics=topics)
     flash("Modifiche salvate.", "ok")
     return redirect(url_for("video_detail", video_pk=video_pk))
+
+
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    if request.method == "POST":
+        updates: dict[str, str] = {}
+
+        provider = (request.form.get("provider") or "openai").strip().lower()
+        updates["LLM_PROVIDER"] = provider if provider in {"openai", "anthropic"} else "openai"
+
+        openai_model = (request.form.get("openai_model") or "").strip()
+        if openai_model:
+            updates["OPENAI_MODEL"] = openai_model
+        claude_model = (request.form.get("claude_model") or "").strip()
+        if claude_model:
+            updates["CLAUDE_MODEL"] = claude_model
+
+        # Ruolo: stringa vuota = torna al default (gestito da _role()).
+        updates["MODEL_ROLE"] = (request.form.get("model_role") or "").strip()
+
+        # Chiavi: salvate solo se l'utente ne inserisce una nuova; un campo
+        # vuoto NON cancella la chiave gia' presente.
+        openai_key = (request.form.get("openai_key") or "").strip()
+        if openai_key:
+            updates["OPENAI_API_KEY"] = openai_key
+        anthropic_key = (request.form.get("anthropic_key") or "").strip()
+        if anthropic_key:
+            updates["ANTHROPIC_API_KEY"] = anthropic_key
+
+        config.write_env_values(updates)
+        flash("Impostazioni salvate.", "ok")
+        return redirect(url_for("settings"))
+
+    return render_template("settings.html", s=config.get_settings())
 
 
 if __name__ == "__main__":
